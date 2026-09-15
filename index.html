@@ -1,0 +1,1146 @@
+<title>Logan Spratt Portfolio</title>
+
+<style>
+  :root {
+    --void: #07040F;
+    --deep: #120726;
+    --horizon: #1B0B3B;
+    --magenta: #FF2E88;
+    --cyan: #00E5FF;
+    --amber: #FFB020;
+    --violet: #A64DFF;
+    --ink: #EFE7FF;
+    --ink-dim: #9A87C4;
+    --rule: rgba(166, 77, 255, 0.28);
+    --bezel: #0C0619;
+
+    --display: "Futura", "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
+    --body: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    --mono: "Cascadia Code", "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  }
+
+  /* per-channel accent — registered so it can tween between tabs */
+  @property --accent {
+    syntax: "<color>";
+    inherits: true;
+    initial-value: #00E5FF;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    background: #05030B;
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.6;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--magenta); color: var(--void); }
+
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+
+  /* ---------- cabinet + monitor shell ---------- */
+
+  .cabinet {
+    height: 100svh;
+    padding: clamp(0.5rem, 1.6vmin, 1.25rem);
+    display: flex;
+  }
+
+  .monitor {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    --accent: #00E5FF;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: 10px;
+    background: var(--bezel);
+    box-shadow:
+      0 0 0 1px rgba(255, 46, 136, 0.2),
+      0 0 24px color-mix(in srgb, var(--accent) 28%, transparent),
+      0 0 60px -10px rgba(255, 46, 136, 0.4),
+      0 24px 90px -20px rgba(166, 77, 255, 0.5);
+    overflow: hidden;
+  }
+
+  /* ---------- tab bar ---------- */
+
+  .tabbar {
+    display: flex;
+    align-items: stretch;
+    gap: clamp(0.25rem, 0.7vmin, 0.5rem);
+    padding: clamp(0.4rem, 1vmin, 0.7rem);
+    border-bottom: 1px solid var(--rule);
+    background: linear-gradient(to bottom, rgba(27, 11, 59, 0.9), rgba(12, 6, 25, 0.9));
+  }
+
+  .tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--rule);
+    border-radius: 5px;
+    background: rgba(7, 4, 15, 0.6);
+    color: var(--ink-dim);
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .tab::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px 0;
+    height: 2px;
+    background: var(--magenta);
+    transform: scaleX(0);
+    transition: transform 0.25s ease;
+  }
+
+  .tab:hover { color: var(--ink); border-color: rgba(0, 229, 255, 0.45); }
+
+  .tab[aria-selected="true"] {
+    color: var(--ink);
+    background: rgba(27, 11, 59, 0.95);
+    border-color: var(--accent);
+    box-shadow:
+      0 0 14px -2px color-mix(in srgb, var(--accent) 70%, transparent),
+      inset 0 0 12px color-mix(in srgb, var(--accent) 18%, transparent);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 75%, transparent);
+  }
+
+  .tab[aria-selected="true"]::after {
+    transform: scaleX(1);
+    background: var(--accent);
+    box-shadow: 0 0 10px 1px var(--accent);
+  }
+
+  /* name tab */
+  .tab-name {
+    flex: 0 1 auto;
+    gap: 0.7rem;
+    padding: 0.5rem clamp(0.75rem, 2vmin, 1.5rem);
+    font-family: var(--display);
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(0.8rem, 1.7vmin, 1.05rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .tab-name .slash { color: var(--magenta); text-shadow: 0 0 10px var(--magenta); }
+
+  .tab-name[aria-selected="true"] {
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--accent) 22%, transparent), rgba(27, 11, 59, 0.95));
+  }
+
+  .tab-group {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    gap: clamp(0.25rem, 0.7vmin, 0.5rem);
+    min-width: 0;
+  }
+
+  .tab-work {
+    flex: 0 1 12rem;
+    min-width: 0;
+    gap: 0.55rem;
+    padding: 0.5rem clamp(0.5rem, 1.4vmin, 1rem);
+    font-family: var(--mono);
+    font-size: clamp(0.62rem, 1.35vmin, 0.78rem);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .tab-work .num {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    flex: none;
+  }
+
+  .tab-work .label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .tab-work { flex: 0 0 auto; }
+    .tab-work .label { display: none; }
+  }
+
+  /* ---------- screen ---------- */
+
+  .screen {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 82% at 50% 82%, color-mix(in srgb, var(--accent) 42%, transparent) 0%, transparent 55%),
+      linear-gradient(to bottom, #0A0418 0%, var(--deep) 40%, #2A0E52 66%, #4A1263 100%);
+  }
+
+  /* twinkling starfield across the upper sky */
+  .stars {
+    position: absolute;
+    inset: 0 0 42% 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1.5px 1.5px at 8% 18%, rgba(239,231,255,.9), transparent),
+      radial-gradient(1px 1px at 22% 34%, rgba(0,229,255,.7), transparent),
+      radial-gradient(1.5px 1.5px at 37% 12%, rgba(239,231,255,.8), transparent),
+      radial-gradient(1px 1px at 51% 28%, rgba(255,46,136,.6), transparent),
+      radial-gradient(1.5px 1.5px at 64% 8%, rgba(239,231,255,.9), transparent),
+      radial-gradient(1px 1px at 73% 32%, rgba(239,231,255,.6), transparent),
+      radial-gradient(1.5px 1.5px at 86% 20%, rgba(0,229,255,.7), transparent),
+      radial-gradient(1px 1px at 94% 38%, rgba(239,231,255,.7), transparent);
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle { from { opacity: .55; } to { opacity: 1; } }
+
+  .ambient {
+    position: absolute;
+    left: -30%;
+    right: -30%;
+    bottom: 0;
+    height: 40%;
+    z-index: 1;
+    perspective: 190px;
+    perspective-origin: 50% 0%;
+    overflow: hidden;
+    opacity: 0.7;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%);
+    mask-image: linear-gradient(to bottom, transparent, #000 30%);
+  }
+
+  .ambient::before {
+    content: "";
+    position: absolute;
+    inset: -140% 0 -60% 0;
+    transform: rotateX(80deg);
+    transform-origin: 50% 0%;
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--accent) 78%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 46, 136, 0.7) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: drift 2.6s linear infinite;
+  }
+
+  /* bright glowing line where sky meets grid */
+  .ambient::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 30%;
+    right: 30%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--accent), #FFFFFF, var(--accent), transparent);
+    box-shadow:
+      0 0 16px 3px color-mix(in srgb, var(--accent) 80%, transparent),
+      0 0 40px 8px rgba(255, 46, 136, 0.4);
+  }
+
+  @keyframes drift { to { background-position: 0 48px, 0 48px; } }
+
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(7, 4, 15, 0.3) 0 1px, transparent 1px 3px);
+  }
+
+  /* a bright tracking band that rolls down the screen, VHS-style */
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 22%;
+    background: linear-gradient(to bottom, transparent, rgba(0, 229, 255, 0.05) 45%, rgba(239, 231, 255, 0.07) 50%, rgba(255, 46, 136, 0.05) 55%, transparent);
+    animation: roll 7s linear infinite;
+  }
+
+  @keyframes roll {
+    from { top: -25%; }
+    to   { top: 100%; }
+  }
+
+  /* whole-tube flicker + chromatic edge */
+  .crt {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    background:
+      linear-gradient(90deg, rgba(255, 46, 136, 0.06), transparent 4%, transparent 96%, rgba(0, 229, 255, 0.06));
+    animation: flicker 5.5s steps(60) infinite;
+  }
+
+  @keyframes flicker {
+    0%, 96%, 100% { opacity: 1; }
+    97% { opacity: 0.78; }
+    98% { opacity: 1; }
+    99% { opacity: 0.85; }
+  }
+
+  .vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 6;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 120px 24px rgba(7, 4, 15, 0.8),
+      inset 0 0 40px 4px rgba(166, 77, 255, 0.15);
+  }
+
+  /* ---------- panels ---------- */
+
+  .panel {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: none;
+    padding: clamp(1rem, 3.4vmin, 2.75rem);
+    overflow: auto;
+    transform-origin: 50% 50%;
+  }
+
+  .panel[data-active] { display: block; }
+
+  /* the new channel is unveiled from the centre line outward, tracking the two
+     halves of the cut as they travel — same duration and easing, so the panel
+     edge stays welded to each line. */
+  .panel.opening { animation: crt-open 0.52s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+  @keyframes crt-open {
+    0%   { clip-path: inset(50% 0 50% 0); filter: brightness(2.4); }
+    30%  { filter: brightness(1.5); }
+    100% { clip-path: inset(0 0 0 0); filter: brightness(1); }
+  }
+
+  /* the cut: one line slices across the middle, then breaks into two that
+     travel to the top and bottom edges. */
+  .cut {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  .cut.active { opacity: 1; }
+
+  .cut-half {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50%;
+  }
+
+  .cut-half::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--accent) 14%, #FFFFFF 50%, var(--accent) 86%, transparent);
+    box-shadow: 0 0 18px 4px color-mix(in srgb, var(--accent) 60%, transparent);
+    transform: scaleX(0);
+    transform-origin: 0% 50%;
+  }
+
+  .cut-a { top: 0; }
+  .cut-a::after { bottom: 0; }
+  .cut-b { top: 50%; }
+  .cut-b::after { top: 0; }
+
+  /* phase 1 — a single line draws across the middle */
+  .cut.slicing .cut-half::after { animation: slice-across 0.3s ease-in-out both; }
+
+  @keyframes slice-across {
+    to { transform: scaleX(1); }
+  }
+
+  /* phase 2 — it breaks apart and the halves run for the edges */
+  .cut.splitting .cut-half::after { transform: scaleX(1); }
+  .cut.splitting .cut-a { animation: part-up 0.52s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .cut.splitting .cut-b { animation: part-down 0.52s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+  @keyframes part-up {
+    0%   { transform: translateY(0); opacity: 1; }
+    75%  { opacity: 1; }
+    100% { transform: translateY(-100%); opacity: 0; }
+  }
+
+  @keyframes part-down {
+    0%   { transform: translateY(0); opacity: 1; }
+    75%  { opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0; }
+  }
+
+  /* ---------- name panel ---------- */
+
+  .me {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1.25fr 0.85fr;
+    gap: clamp(1.25rem, 4vmin, 3.5rem);
+    align-content: center;
+    max-width: 1240px;
+    margin-inline: auto;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: clamp(0.62rem, 1.3vmin, 0.75rem);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.9rem;
+  }
+
+  .me h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(2.1rem, 7.8vmin, 5.8rem);
+    line-height: 0.88;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    margin: 0 0 clamp(0.75rem, 2.4vmin, 1.75rem);
+    text-wrap: balance;
+    color: #FFF0FA;
+    text-shadow:
+      0 0 8px rgba(255, 46, 136, 0.9),
+      0 0 24px color-mix(in srgb, var(--accent) 60%, transparent),
+      0 0 54px color-mix(in srgb, var(--accent) 45%, transparent),
+      3px 3px 0 rgba(122, 12, 74, 0.6);
+  }
+
+  /* chrome lettering: metallic vertical gradient with a hard horizon line */
+  .me h1 em {
+    display: block;
+    font-style: italic;
+    background: linear-gradient(to bottom,
+      #FFFFFF 0%, #E6F9FF 30%, var(--accent) 49%,
+      #2A6FA8 51%, var(--magenta) 78%, #FF8AC2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 30px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .me p {
+    margin: 0 0 0.9rem;
+    max-width: 46ch;
+    color: var(--ink-dim);
+    font-size: clamp(0.85rem, 1.8vmin, 1.02rem);
+    text-shadow: 0 1px 8px rgba(7, 4, 15, 0.85);
+  }
+
+  .me p.lede {
+    color: var(--ink);
+    font-size: clamp(0.95rem, 2.1vmin, 1.2rem);
+    line-height: 1.5;
+    text-shadow: 0 1px 12px rgba(7, 4, 15, 0.9);
+  }
+
+  .contact-card {
+    align-self: center;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: rgba(18, 7, 38, 0.72);
+  }
+
+  .card-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.8rem;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: clamp(0.58rem, 1.2vmin, 0.7rem);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--magenta); flex: none; }
+  .dot:nth-of-type(2) { background: var(--amber); }
+  .dot:nth-of-type(3) { background: var(--cyan); }
+
+  .card-body {
+    display: grid;
+    gap: 0.5rem;
+    padding: clamp(0.8rem, 2vmin, 1.25rem);
+    font-family: var(--mono);
+    font-size: clamp(0.72rem, 1.5vmin, 0.86rem);
+    line-height: 1.75;
+  }
+
+  .card-body .row { display: flex; gap: 0.6rem; }
+  .card-body .k { color: var(--accent); flex: none; }
+  .card-body a { color: var(--magenta); text-underline-offset: 3px; }
+  .card-body a:hover { color: var(--cyan); }
+
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: 0.35rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--rule);
+    color: var(--amber);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: clamp(0.62rem, 1.3vmin, 0.74rem);
+  }
+
+  .status::before {
+    content: "";
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 10px var(--amber);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 50% { opacity: 0.25; } }
+
+  /* ---------- work panels ---------- */
+
+  .work {
+    height: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1.32fr) minmax(0, 0.68fr);
+    gap: clamp(1.25rem, 3.6vmin, 3rem);
+    align-items: center;
+    max-width: 1320px;
+    margin-inline: auto;
+  }
+
+  /* preview leads on the left, text runs as a column on the right —
+     ordered here rather than in the markup so the heading still comes
+     first for screen readers and keyboard order. */
+  .work .carousel { order: 1; }
+  .work-copy { order: 2; min-width: 0; }
+
+  .work-copy h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(1.6rem, 4.8vmin, 3.2rem);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin: 0 0 clamp(0.6rem, 1.8vmin, 1.1rem);
+    text-wrap: balance;
+    color: #FFF0FA;
+    text-shadow:
+      0 0 8px rgba(255, 46, 136, 0.8),
+      0 0 26px color-mix(in srgb, var(--accent) 55%, transparent),
+      2px 2px 0 rgba(122, 12, 74, 0.55);
+  }
+
+  .work-copy p {
+    margin: 0 0 clamp(0.9rem, 2.4vmin, 1.5rem);
+    color: var(--ink-dim);
+    font-size: clamp(0.82rem, 1.75vmin, 1rem);
+    max-width: 42ch;
+  }
+
+  .facts {
+    display: grid;
+    gap: 0;
+    margin: 0 0 clamp(0.9rem, 2.4vmin, 1.4rem);
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: clamp(0.66rem, 1.4vmin, 0.79rem);
+  }
+
+  .facts div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: clamp(0.35rem, 1vmin, 0.55rem);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .facts dt { color: var(--ink-dim); letter-spacing: 0.14em; text-transform: uppercase; }
+  .facts dd { margin: 0; color: var(--ink); text-align: right; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: clamp(0.6rem, 1.25vmin, 0.7rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius: 3px;
+    padding: 0.18rem 0.5rem;
+  }
+
+  /* ---------- carousel ---------- */
+
+  .carousel {
+    min-width: 0;
+    height: 100%;
+    max-height: min(72vh, 620px);
+    align-self: center;
+  }
+
+  /* framed viewer — same chrome as the contact card */
+  .viewer {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    background: rgba(18, 7, 38, 0.72);
+    overflow: hidden;
+  }
+
+  .frame {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--deep);
+    box-shadow: inset 0 0 60px rgba(7, 4, 15, 0.8);
+  }
+
+  .track {
+    display: flex;
+    height: 100%;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .slide {
+    position: relative;
+    flex: 0 0 100%;
+    margin: 0;
+    height: 100%;
+  }
+
+  .slide figcaption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.4rem 1rem 0.7rem;
+    background: linear-gradient(to top, rgba(7, 4, 15, 0.92), transparent);
+    font-family: var(--mono);
+    font-size: clamp(0.62rem, 1.3vmin, 0.74rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(7, 4, 15, 0.2) 0 1px, transparent 1px 3px);
+  }
+
+  /* controls live inside the frame, centred under the photo */
+  .carousel-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border-top: 1px solid var(--rule);
+    background: rgba(12, 6, 25, 0.6);
+    font-family: var(--mono);
+    font-size: clamp(0.62rem, 1.3vmin, 0.74rem);
+    letter-spacing: 0.14em;
+    color: var(--ink-dim);
+  }
+
+  .arrow {
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+    border-radius: 4px;
+    background: rgba(7, 4, 15, 0.55);
+    color: var(--ink);
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    flex: none;
+  }
+
+  .arrow:hover { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 18%, transparent); }
+
+  .dots { display: flex; gap: 0.4rem; }
+
+  .dots button {
+    width: 1.9rem;
+    height: 3px;
+    border-radius: 2px;
+    background: rgba(154, 135, 196, 0.35);
+    transition: background 0.25s;
+  }
+
+  .dots button[aria-current="true"] { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .dots button:hover { background: var(--accent); }
+
+  /* ---------- slide artwork (swap for real images) ---------- */
+
+  .a1 { background-image: url("photos/a1.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .a2 { background-image: url("photos/a2.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .a3 { background-image: url("photos/a3.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+
+  .b1 { background-image: url("photos/b1.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .b2 { background-image: url("photos/b2.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .b3 { background-image: url("photos/b3.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+
+  .c1 { background-image: url("photos/c1.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .c2 { background-image: url("photos/c2.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .c3 { background-image: url("photos/c3.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+
+  .d1 { background-image: url("photos/d1.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .d2 { background-image: url("photos/d2.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .d3 { background-image: url("photos/d3.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+
+  .e1 { background-image: url("photos/e1.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .e2 { background-image: url("photos/e2.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+  .e3 { background-image: url("photos/e3.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat; }
+
+  /* ---------- status bar ---------- */
+
+  .statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(0.35rem, 1vmin, 0.6rem) clamp(0.6rem, 1.6vmin, 1.1rem);
+    border-top: 1px solid var(--rule);
+    background: rgba(12, 6, 25, 0.95);
+    font-family: var(--mono);
+    font-size: clamp(0.58rem, 1.2vmin, 0.7rem);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
+  .statusbar .now { color: var(--accent); text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 60%, transparent); }
+
+  @media (max-width: 640px) {
+    .statusbar .hint { display: none; }
+  }
+
+  /* ---------- narrow / short screens ---------- */
+
+  @media (max-width: 900px), (max-height: 560px) {
+    .me, .work { grid-template-columns: 1fr; align-content: start; align-items: start; }
+    .carousel { max-height: 46vh; }
+    .facts { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="cabinet">
+  <div class="monitor">
+
+    <div class="tabbar" role="tablist" aria-label="Portfolio sections">
+      <button class="tab tab-name" role="tab" id="tab-me" aria-controls="panel-me" aria-selected="true">
+        Logan<span class="slash">/</span>Spratt
+      </button>
+
+      <div class="tab-group">
+        <button class="tab tab-work" role="tab" id="tab-1" aria-controls="panel-1" aria-selected="false">
+          <span class="num">01</span><span class="label">C.A.I.S.</span>
+        </button>
+        <button class="tab tab-work" role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false">
+          <span class="num">02</span><span class="label">Care2Care</span>
+        </button>
+        <button class="tab tab-work" role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false">
+          <span class="num">03</span><span class="label">ChefMate</span>
+        </button>
+        <button class="tab tab-work" role="tab" id="tab-4" aria-controls="panel-4" aria-selected="false">
+          <span class="num">04</span><span class="label">ComTrade</span>
+        </button>
+        <button class="tab tab-work" role="tab" id="tab-5" aria-controls="panel-5" aria-selected="false">
+          <span class="num">05</span><span class="label">Leisure</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="screen">
+      <div class="stars" aria-hidden="true"></div>
+      <div class="ambient" aria-hidden="true"></div>
+
+      <!-- ===== ME ===== -->
+      <section class="panel" id="panel-me" role="tabpanel" aria-labelledby="tab-me" tabindex="0" data-active>
+        <div class="me">
+          <div>
+            <p class="eyebrow">UX Designer & Engineer</p>
+            <h1>Logan<em>Spratt</em></h1>
+            <p class="lede">Designing products without forgetting the people who actually use them.</p>
+            <p>Hi, I'm Logan, and I am an end-to-end user experience designer, engineer, and researcher. Through my work, I pride myself on truly understanding the specific needs and behavior of my audience. With my experience in both design and engineering, I can make sure both sides are perfectly aligned on how to design for our user.</p>
+          </div>
+
+          <div class="contact-card">
+            <div class="card-bar">
+              <span class="dot" aria-hidden="true"></span>
+              <span class="dot" aria-hidden="true"></span>
+              <span class="dot" aria-hidden="true"></span>
+              <span>contact</span>
+            </div>
+            <div class="card-body">
+              <div class="row"><span class="k">email</span><a href="mailto:lspratt007@gmail.com">lspratt007@gmail.com</a></div>
+              <div class="row"><span class="k">linkedin</span><a href="https://www.linkedin.com/in/loganspratt/">@loganspratt</a></div>
+              <p class="status">Open for Work</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 01 ===== -->
+      <section class="panel" id="panel-1" role="tabpanel" aria-labelledby="tab-1" tabindex="0" hidden>
+        <div class="work">
+          <div class="work-copy">
+            <p class="eyebrow">01 — Specific Users</p>
+            <h2>Crew Anomaly Investigation System</h2>
+            <p>Astronauts on future Mars missions will have to wait 44 minutes to get a response from ground control. C.A.I.S gives the crew the autonomy they want to solve onboard problems themselves instead, and meets the specific needs of these highly-trained and habitual users.</p>
+            <dl class="facts">
+              <div><dt>Client</dt><dd>NASA</dd></div>
+              <div><dt>Role</dt><dd>Engineering, design, research</dd></div>
+            </dl>
+          </div>
+
+          <div class="carousel" data-carousel>
+            <div class="viewer">
+            <div class="frame">
+              <div class="track">
+                <figure class="slide a1"><figcaption>Track anomaly progression through multiple modalities</figcaption></figure>
+                <figure class="slide a2"><figcaption>Follows existing crew mental model of messages and state changes</figcaption></figure>
+                <figure class="slide a3"><figcaption>Spatial map of anomaly, highly requested by astronauts</figcaption></figure>
+              </div>
+            </div>
+            <div class="carousel-bar">
+              <button class="arrow" data-prev aria-label="Previous image">‹</button>
+              <div class="dots" data-dots></div>
+              <button class="arrow" data-next aria-label="Next image">›</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 02 ===== -->
+      <section class="panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2" tabindex="0" hidden>
+        <div class="work">
+          <div class="work-copy">
+            <p class="eyebrow">02 — Secure Environment</p>
+            <h2>Care2Care</h2>
+            <p>UPMC is a hospital that categorizes the needs of patient caregivers and recommends resources accordingly. Care2Care is a digitzed version of this manual process, built end-to-end with both a mobile and web component, and built securely to protect private information and integrate into their existing infrastructure.</p>
+            <dl class="facts">
+              <div><dt>Client</dt><dd>University of Pittsburgh Medical Center</dd></div>
+              <div><dt>Role</dt><dd>Engineering</dd></div>
+            </dl>
+          </div>
+
+          <div class="carousel" data-carousel>
+            <div class="viewer">
+            <div class="frame">
+              <div class="track">
+                <figure class="slide b1"><figcaption>Home screen prioritizes the primary functionality</figcaption></figure>
+                <figure class="slide b2"><figcaption>Caretakers can do more with resources than just follow links</figcaption></figure>
+                <figure class="slide b3"><figcaption>One stop shop for liaisons to help their caregivers</figcaption></figure>
+              </div>
+            </div>
+            <div class="carousel-bar">
+              <button class="arrow" data-prev aria-label="Previous image">‹</button>
+              <div class="dots" data-dots></div>
+              <button class="arrow" data-next aria-label="Next image">›</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 03 ===== -->
+      <section class="panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3" tabindex="0" hidden>
+        <div class="work">
+          <div class="work-copy">
+            <p class="eyebrow">03 — Accessibility</p>
+            <h2>ChefMate</h2>
+            <p>ChefMate is designed as a companion for older adults in the kitchen. ChefMate carefully addresses the array of possible accessibility considerations, such as motor difficulties, hearing loss, or low vision, all while maintaining the user's autonomy.</p>
+            <dl class="facts">
+              <div><dt>Client</dt><dd>Carnegie Mellon University</dd></div>
+              <div><dt>Role</dt><dd>Design, engineering</dd></div>
+            </dl>
+          </div>
+
+          <div class="carousel" data-carousel>
+            <div class="viewer">
+            <div class="frame">
+              <div class="track">
+                <figure class="slide c1"><figcaption>Following accessibility standards</figcaption></figure>
+                <figure class="slide c2"><figcaption>Safety is the highest priority</figcaption></figure>
+                <figure class="slide c3"><figcaption>Multiple inputs and a chat bot to address most needs</figcaption></figure>
+              </div>
+            </div>
+            <div class="carousel-bar">
+              <button class="arrow" data-prev aria-label="Previous image">‹</button>
+              <div class="dots" data-dots></div>
+              <button class="arrow" data-next aria-label="Next image">›</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 04 ===== -->
+      <section class="panel" id="panel-4" role="tabpanel" aria-labelledby="tab-4" tabindex="0" hidden>
+        <div class="work">
+          <div class="work-copy">
+            <p class="eyebrow">04 — Empowering</p>
+            <h2>Comtrade</h2>
+            <p>This project included a deep dive into the realm of trading card games and concert ticket sales, and the pain that scalping brings to the common consumer. Comtrade aims to address this by placing the power in the hands of people who are actually involved in the hobby.</p>
+            <dl class="facts">
+              <div><dt>Client</dt><dd>Carnegie Mellon University</dd></div>
+              <div><dt>Role</dt><dd>Research, engineering</dd></div>
+            </dl>
+          </div>
+
+          <div class="carousel" data-carousel>
+            <div class="viewer">
+            <div class="frame">
+              <div class="track">
+                <figure class="slide d1"><figcaption>Keep cards for the community with a reputation system</figcaption></figure>
+                <figure class="slide d2"><figcaption>Make trades easy</figcaption></figure>
+                <figure class="slide d3"><figcaption>Build a collection and connect with others</figcaption></figure>
+              </div>
+            </div>
+            <div class="carousel-bar">
+              <button class="arrow" data-prev aria-label="Previous image">‹</button>
+              <div class="dots" data-dots></div>
+              <button class="arrow" data-next aria-label="Next image">›</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 05 ===== -->
+      <section class="panel" id="panel-5" role="tabpanel" aria-labelledby="tab-5" tabindex="0" hidden>
+        <div class="work">
+          <div class="work-copy">
+            <p class="eyebrow">05 — Physical Design</p>
+            <h2>Leisure</h2>
+            <p>Design often entails more than a digital interface. Physical controls that are intuitive is just as important, as seen with Leisure, a prototype of an autonomous scooter. The vehicle went through numerous physical iterations through multiple rounds of testing as common expectations and behaviors began to surface.</p>
+            <dl class="facts">
+              <div><dt>Client</dt><dd>Carnegie Mellon University</dd></div>
+              <div><dt>Role</dt><dd>Design</dd></div>
+            </dl>
+          </div>
+
+          <div class="carousel" data-carousel>
+            <div class="viewer">
+            <div class="frame">
+              <div class="track">
+                <figure class="slide e1"><figcaption>Navigable interface at just a glance</figcaption></figure>
+                <figure class="slide e2"><figcaption>Designed to be used by anybody and at high speeds</figcaption></figure>
+                <figure class="slide e3"><figcaption>Mocked up physical controls</figcaption></figure>
+              </div>
+            </div>
+            <div class="carousel-bar">
+              <button class="arrow" data-prev aria-label="Previous image">‹</button>
+              <div class="dots" data-dots></div>
+              <button class="arrow" data-next aria-label="Next image">›</button>
+            </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="cut" aria-hidden="true">
+        <span class="cut-half cut-a"></span>
+        <span class="cut-half cut-b"></span>
+      </div>
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="crt" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+    </div>
+
+    <div class="statusbar">
+      <span>Now showing — <span class="now" data-now>Me</span></span>
+      <span class="hint">← → to change channel</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const monitor = document.querySelector(".monitor");
+  const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+  const cut = document.querySelector(".cut");
+  const nowLabel = document.querySelector("[data-now]");
+  const names = ["Me", "CAIS", "Care2Care", "ChefMate", "Comtrade", "Leisure"];
+  // one accent per channel: cyan, blue, purple, magenta, orange, yellow
+  const accents = ["#00E5FF", "#3B7BFF", "#A64DFF", "#FF2E88", "#FF7A2D", "#FFD029"];
+  let current = 0;
+  let busy = false;
+
+  monitor.style.setProperty("--accent", accents[0]);
+
+  function show(index) {
+    if (busy || index === current) return;
+    const from = tabs[current];
+    const to = tabs[index];
+    const fromPanel = document.getElementById(from.getAttribute("aria-controls"));
+    const toPanel = document.getElementById(to.getAttribute("aria-controls"));
+
+    from.setAttribute("aria-selected", "false");
+    to.setAttribute("aria-selected", "true");
+    current = index;
+    nowLabel.textContent = names[index];
+    monitor.style.setProperty("--accent", accents[index]);
+
+    const swap = () => {
+      fromPanel.hidden = true;
+      fromPanel.removeAttribute("data-active");
+      toPanel.hidden = false;
+      toPanel.setAttribute("data-active", "");
+    };
+
+    if (reduced) { swap(); return; }
+
+    busy = true;
+    const SLICE = 300;   // line draws across the middle
+    const PART = 520;    // halves travel to the edges — must match the CSS
+
+    // 1. one line cuts across the centre
+    cut.classList.remove("slicing", "splitting");
+    void cut.offsetWidth;
+    cut.classList.add("active", "slicing");
+
+    setTimeout(() => {
+      // 2. swap behind the line, then break it in two — the panel unveils
+      //    from the centre at the same rate the halves pull apart
+      swap();
+      cut.classList.remove("slicing");
+      cut.classList.add("splitting");
+      toPanel.classList.remove("opening");
+      void toPanel.offsetWidth;
+      toPanel.classList.add("opening");
+
+      setTimeout(() => {
+        toPanel.classList.remove("opening");
+        cut.classList.remove("active", "splitting");
+        busy = false;
+      }, PART + 20);
+    }, SLICE);
+  }
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener("click", () => show(i));
+  });
+
+  // Left/Right always change the channel, whether or not a tab is focused —
+  // so clicking a tab first doesn't switch you into a focus-roving mode.
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    // drop focus off any tab so arrows don't leave a lingering highlight
+    const active = document.activeElement;
+    if (active && active.closest('[role="tab"]')) active.blur();
+    show(e.key === "ArrowRight"
+      ? (current + 1) % tabs.length
+      : (current - 1 + tabs.length) % tabs.length);
+  });
+
+  // ---------- carousels ----------
+  document.querySelectorAll("[data-carousel]").forEach((root) => {
+    const track = root.querySelector(".track");
+    const slides = Array.from(root.querySelectorAll(".slide"));
+    const dotsBox = root.querySelector("[data-dots]");
+    let at = 0;
+
+    const dots = slides.map((_, i) => {
+      const b = document.createElement("button");
+      b.setAttribute("aria-label", `Image ${i + 1} of ${slides.length}`);
+      b.addEventListener("click", () => go(i));
+      dotsBox.appendChild(b);
+      return b;
+    });
+
+    function go(i) {
+      at = (i + slides.length) % slides.length;
+      track.style.transform = `translateX(-${at * 100}%)`;
+      dots.forEach((d, j) => d.setAttribute("aria-current", j === at ? "true" : "false"));
+    }
+
+    root.querySelector("[data-prev]").addEventListener("click", () => go(at - 1));
+    root.querySelector("[data-next]").addEventListener("click", () => go(at + 1));
+    go(0);
+  });
+</script>
